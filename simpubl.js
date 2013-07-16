@@ -44,15 +44,15 @@
 		},
 		publish : function(data, topic){
 			var topic	= topic || 'general';
-			var len		= this.subscribers[topic].length;
-			
-			for(i=0; i<len; i++){
-				this.subscribers[topic][i](data); /* Call registered function and pass arguments as 'data' */
+			if(this.subscribers[topic]){
+				var len		= this.subscribers[topic].length;
+				
+				for(i=0; i<len; i++){
+					this.subscribers[topic][i](data); /* Call registered function and pass arguments as 'data' */
+				}
 			}
 		}
-		/*
-		TODO: 	Queue-shifter
-		TODO: 	Multiple subscriber. Pass subscribers as array */
+		/* TODO: 	Multiple subscriber. Pass subscribers as array */
 	}
 	
 	var publisher = window.publisher = new Publisher();
@@ -63,6 +63,9 @@ var inboxNew = function(data){
 }
 var mailSent = function(data){
 	console.log('mailSent: '+data);
+}
+var mailRefresh = function(data){
+	console.log('mailRefresh: '+data);
 }
 
 publisher.subscribe(inboxNew,'inbox:new');
