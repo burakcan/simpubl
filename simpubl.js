@@ -52,7 +52,6 @@
 				}
 			}
 		}
-		/* TODO: 	Multiple subscriber. Pass subscribers as array */
 	}
 	
 	var publisher = window.publisher = new Publisher();
