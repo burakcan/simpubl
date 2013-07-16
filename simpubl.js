@@ -5,7 +5,7 @@
 		this.queue		 = []; /* Message queue. Holds messages sperated by topics */
 	}
 	Publisher.prototype = {
-		subscribe : function(topic, subscriber){
+		subscribe : function(subscriber, topic){
 			var topic = topic || 'general';
 			/* Check if topic is exists, else create */
 			if(!this.subscribers[topic]){
@@ -18,12 +18,13 @@
 			/* Register the subscriber */
 			this.subscribers[topic].push(subscriber);
 		},
-		unSubscribe : function(topic, subscriber){
+		unSubscribe : function(subscriber, topic){
 			var topic = topic || 'general';
 			var index = this.subscribers[topic].indexOf(subscriber);
 			this.subscribers[topic].splice(index, 1); /* unregister the subscriber */
 		},
-		addToQueue : function(topic, data){
+		addToQueue : function(data, topic){
+			topic = topic || 'general';
 			/* Set message object */
 			var message = new Object();
 			message['topic']	= topic;
@@ -31,17 +32,17 @@
 			/* Register message to queue */
 			this.queue.push(message);
 		},
-		processQueue : function(){
-			var len	= this.queue.length; 
+		processQueue : function(len){
+			var len	= len || this.queue.length; 
 			for(var i=0; i<len; i++){
 				var message = this.queue.shift();
-				this.publish(message['topic'],message['data']);	
+				this.publish(message['data'],message['topic']);	
 			}
 		},
 		clearQueue : function(){
 			this.queue = [];
 		},
-		publish : function(topic, data){
+		publish : function(data, topic){
 			var topic	= topic || 'general';
 			var len		= this.subscribers[topic].length;
 			
@@ -50,9 +51,6 @@
 			}
 		}
 		/*
-		TODO: 	Messages are not publishing ordered by time in processQueue().
-				They are being published with the order of topics.
-				In the future, they must be published with the right order.
 		TODO: 	Queue-shifter
 		TODO: 	Multiple subscriber. Pass subscribers as array */
 	}
@@ -60,12 +58,12 @@
 	var publisher = window.publisher = new Publisher();
 })(window,undefined);
 
-var aSubscriber = function(data){
-	console.log('a subscriber: '+data);
+var inboxNew = function(data){
+	console.log('inboxNew: '+data);
 }
-var anotherSubscriber = function(data){
-	console.log('another subscriber: '+data);
+var mailSent = function(data){
+	console.log('mailSent: '+data);
 }
 
-publisher.subscribe('firstTopic',aSubscriber);
-publisher.subscribe('secondTopic',anotherSubscriber);
+publisher.subscribe(inboxNew,'inbox:new');
+publisher.subscribe(mailSent,'mail:sent');
