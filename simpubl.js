@@ -1,5 +1,5 @@
 (function(window,undefined){
-  var Publisher = function(){
+	var Publisher = function(){
 		this.subscribers = {}; /* Subscribers object. Holds subscribers sperated by topics */
 		this.topics		 = []; /* Topics list */
 		this.queue		 = []; /* Message queue. Holds messages sperated by topics */
@@ -32,24 +32,14 @@
 			this.queue.push(message);
 		},
 		processQueue : function(){
-			var len	= this.topics.length; 
-			for(var i=0; i<len; i++){ /* Loop in all topics */
-				 var topic	= this.topics[i]; 
-				 if(this.queue[topic]){ /* If a message is found with this topic */
-					 var messageLen = this.queue[topic].length;
-					 for(var j=0; j<messageLen; j++){ /* Loop in messages with this topic and publish them. */
-						 var message = this.queue[topic].shift();
-						 this.publish(topic, message);
-					 }
-				}
-			 }
+			var len	= this.queue.length; 
+			for(var i=0; i<len; i++){
+				var message = this.queue.shift();
+				this.publish(message['topic'],message['data']);	
+			}
 		},
 		clearQueue : function(){
-			var len	= this.topics.length;
-			for(var i=0; i<len; i++){ /* Loop in all topics */
-				var topic	= this.topics[i];
-				this.queue[topic] = []; /* Clear. We're keeping this topic in queue */
-			}
+			this.queue = [];
 		},
 		publish : function(topic, data){
 			var topic	= topic || 'general';
