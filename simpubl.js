@@ -1,4 +1,4 @@
-(function(window,undefined){
+(function(window){
 	var Publisher = function(){
 		this.subscribers = {}; /* Subscribers object. Holds subscribers sperated by topics */
 		this.topics		 = []; /* Topics list */
@@ -55,7 +55,7 @@
 	}
 	
 	var publisher = window.publisher = new Publisher();
-})(window,undefined);
+})(window);
 
 var inboxNew = function(data){
 	console.log('inboxNew: '+data);
