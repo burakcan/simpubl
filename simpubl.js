@@ -8,15 +8,30 @@
 		subscribe : function(subscriber, topic){
 			var topic = topic || 'general';
 			/* Check if topic is exists, else create */
-			if(!this.subscribers[topic]){
-				this.subscribers[topic] = [];
-			}
-			/* Check if topic is exists in topic list, else register */
-			if(this.topics.indexOf(topic)<0){
-				this.topics.push(topic);
-			}
-			/* Register the subscriber */
-			this.subscribers[topic].push(subscriber);
+            if(topic instanceof Array){
+                var len = topic.length;
+                for(var i=0; i<len; i++){
+                    if(!this.subscribers[topic[i]]){
+                        this.subscribers[topic[i]] = [];
+                    }
+                    /* Check if topic is exists in topic list, else register */
+                    if(this.topics.indexOf(topic[i])<0){
+                        this.topics.push(topic[i]);
+                    }
+                    /* Register the subscriber */
+			        this.subscribers[topic[i]].push(subscriber);
+                }
+            }else{
+                if(!this.subscribers[topic]){
+                    this.subscribers[topic] = [];
+                }
+                /* Check if topic is exists in topic list, else register */
+                if(this.topics.indexOf(topic)<0){
+                    this.topics.push(topic);
+                }
+                /* Register the subscriber */
+                this.subscribers[topic].push(subscriber);
+            }
 		},
 		unSubscribe : function(subscriber, topic){
 			var topic = topic || 'general';
@@ -48,24 +63,10 @@
 				var len		= this.subscribers[topic].length;
 				
 				for(i=0; i<len; i++){
-					this.subscribers[topic][i](data); /* Call registered function and pass arguments as 'data' */
+					this.subscribers[topic][i](data,topic); /* Call registered function and pass arguments as 'data' */
 				}
 			}
 		}
 	}
-	
 	var publisher = window.publisher = new Publisher();
 })(window);
-
-var inboxNew = function(data){
-	console.log('inboxNew: '+data);
-}
-var mailSent = function(data){
-	console.log('mailSent: '+data);
-}
-var mailRefresh = function(data){
-	console.log('mailRefresh: '+data);
-}
-
-publisher.subscribe(inboxNew,'inbox:new');
-publisher.subscribe(mailSent,'mail:sent');
