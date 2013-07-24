@@ -3,6 +3,7 @@ class Publisher
         @subscribers    = {} #Subscribers object.
         @topics         = [] #Topics list.
         @queue          = [] #Message queue.
+        
     Publisher:: = {
         subscribe   : (subscriber,topic) ->
             topic = topic or "general"
@@ -10,11 +11,11 @@ class Publisher
                 for topicName,i in topic
                     @subscribers[topicName] = []    unless @subscribers[topicName]
                     @topics.push(topicName)         unless (topicName in @topics)
-                    @subscribers[topicName].push(subscriber)
+                    @subscribers[topicName].push subscriber
             else    #Add to one topic
                 @subscribers[topic] = []    unless @subscribers[topic]
                 @topics.push(topic)         unless (topic in @topics)
-                @subscribers[topic].push(subscriber)
+                @subscribers[topic].push subscriber
         
         unSubscribe : (subscriber,topic) -> #unSubscribe function from given topic or general if no topic is specified
             topic = topic or "general"
@@ -25,7 +26,7 @@ class Publisher
             message = 
                 topic   : topic
                 data    : data
-            @queue.push(message)
+            @queue.push message
             
         processQueue: (len) -> #process to queue. If len defines the number of messages to publish. By default, publishes all messages
             len = len or @queue.length
